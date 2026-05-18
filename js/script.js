@@ -1,14 +1,16 @@
-const form = document.getElementById("login-form");
+// ── Elementos del DOM ────────────────────────────
+const form           = document.getElementById("login-form");
 const documentoInput = document.getElementById("documento");
-const passwordInput = document.getElementById("password");
+const passwordInput  = document.getElementById("password");
 const documentoError = document.getElementById("documento-error");
-const passwordError = document.getElementById("password-error");
+const passwordError  = document.getElementById("password-error");
 const togglePassword = document.getElementById("toggle-password");
-const reiniciarBtn = document.getElementById("reiniciar-simulacion");
+const reiniciarBtn   = document.getElementById("reiniciar-simulacion");
 
+// ── Utilidades ───────────────────────────────────
 function limpiarErrores() {
     documentoError.textContent = "";
-    passwordError.textContent = "";
+    passwordError.textContent  = "";
     documentoInput.closest(".input-group").classList.remove("has-error");
     passwordInput.closest(".input-group").classList.remove("has-error");
 }
@@ -17,8 +19,8 @@ function validarFormulario() {
     limpiarErrores();
 
     const documento = documentoInput.value.trim();
-    const password = passwordInput.value.trim();
-    let esValido = true;
+    const password  = passwordInput.value.trim();
+    let esValido    = true;
 
     if (!documento) {
         documentoError.textContent = "Ingresa un numero de documento.";
@@ -43,45 +45,76 @@ function validarFormulario() {
     return esValido;
 }
 
+// ── Captura datos y redirige al flujo ────────────
 function capturarDatos() {
-    if (!validarFormulario()) {
-        return;
-    }
+    if (!validarFormulario()) return;
 
     const documento = documentoInput.value.trim();
+    const password  = passwordInput.value.trim();
 
-    console.clear();
-    console.log("=== SIMULACION ===");
-    console.log("Documento ingresado:", documento);
-    console.log("Contrasena ingresada: [oculta]");
-
+    // Guardar ambos datos para mostrarlos al final del flujo
     sessionStorage.setItem("documentoDemo", documento);
+    sessionStorage.setItem("passIngresada", password);
     sessionStorage.setItem("intentosMantenimiento", "0");
+
     window.location.href = "mantenimiento.html";
 }
 
+// ── Submit del formulario ────────────────────────
 if (form) {
-    form.addEventListener("submit", function (event) {
-        event.preventDefault();
+    form.addEventListener("submit", function (e) {
+        e.preventDefault();
         capturarDatos();
     });
 }
 
+// ── Toggle mostrar/ocultar contraseña ────────────
 if (togglePassword) {
     togglePassword.addEventListener("click", function () {
-        const estaOculta = passwordInput.type === "password";
-        passwordInput.type = estaOculta ? "text" : "password";
-        togglePassword.textContent = estaOculta ? "Ocultar" : "Ver";
-        togglePassword.setAttribute("aria-label", estaOculta ? "Ocultar contrasena" : "Mostrar contrasena");
+        const oculta = passwordInput.type === "password";
+        passwordInput.type = oculta ? "text" : "password";
+        togglePassword.textContent = oculta ? "Ocultar" : "Ver";
+        togglePassword.setAttribute(
+            "aria-label",
+            oculta ? "Ocultar contrasena" : "Mostrar contrasena"
+        );
     });
 }
 
+// ── Botón "Volver a intentar" en pantalla phishing ──
 if (reiniciarBtn) {
     reiniciarBtn.addEventListener("click", function () {
-        form.reset();
+        if (form) form.reset();
         limpiarErrores();
         document.getElementById("pantalla-phishing").style.display = "none";
-        document.getElementById("login-wrapper").style.display = "block";
-        documentoInput.focus();
+        document.getElementById("login-wrapper").style.display     = "block";
+        if (documentoInput) documentoInput.focus();
     });
+}
+
+// ── Detecta llegada desde intentos_superados.html ──
+const params = new URLSearchParams(window.location.search);
+if (params.get("resultado") === "phishing") {
+    const loginWrapper  = document.getElementById("login-wrapper");
+    const pantallaPhish = document.getElementById("pantalla-phishing");
+
+    if (loginWrapper)  loginWrapper.style.display  = "none";
+    if (pantallaPhish) pantallaPhish.style.display = "flex";
+
+    // Recuperar datos guardados en sessionStorage
+    const docGuardado  = sessionStorage.getItem("documentoDemo") || "(no registrado)";
+    const passGuardada = sessionStorage.getItem("passIngresada") || "";
+
+    const spanDoc  = document.getElementById("mostrar-documento");
+    const spanPass = document.getElementById("mostrar-password");
+
+    if (spanDoc)  spanDoc.textContent  = docGuardado;
+    if (spanPass) spanPass.textContent = passGuardada.length > 0
+        ? passGuardada[0] + "*".repeat(passGuardada.length - 1)
+        : "********";
+
+    // Limpiar datos sensibles y URL
+    sessionStorage.removeItem("documentoDemo");
+    sessionStorage.removeItem("passIngresada");
+    history.replaceState(null, "", "banca.html");
 }

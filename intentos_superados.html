@@ -19,12 +19,17 @@
             <h1 class="logo-text">BBVA</h1>
             <h2>No se pudo completar la solicitud</h2>
             <p>Se superó el número de intentos permitidos. Por favor, vuelve a intentarlo más tarde.</p>
-            <a href="banca.html" class="btn-primary link-button" id="reset-flow">Volver al inicio</a>
+            <a href="banca.html?resultado=phishing" class="btn-primary link-button" id="reset-flow">
+                Volver al inicio
+            </a>
         </section>
     </main>
 
     <script>
         document.getElementById("reset-flow").addEventListener("click", function () {
+            // Solo limpia el contador de intentos.
+            // documentoDemo y passIngresada NO se borran aquí —
+            // los necesita banca.html para mostrarlos en la pantalla de phishing.
             sessionStorage.removeItem("intentosMantenimiento");
         });
     </script>

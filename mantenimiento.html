@@ -33,20 +33,23 @@
     </main>
 
     <script>
-        const MAX_INTENTOS = 3;
+        const MAX_INTENTOS     = 3;
         const intentosActuales = Number(sessionStorage.getItem("intentosMantenimiento") || "0") + 1;
         sessionStorage.setItem("intentosMantenimiento", String(intentosActuales));
 
-        if (intentosActuales > MAX_INTENTOS) {
-            window.location.href = "intentos_superados.html";
-        }
-
-        const loadingState = document.getElementById("loading-state");
+        const loadingState     = document.getElementById("loading-state");
         const maintenanceState = document.getElementById("maintenance-state");
-        const retryButton = document.getElementById("retry-button");
+        const retryButton      = document.getElementById("retry-button");
 
+        // El chequeo ocurre DESPUÉS del loading de 5 seg,
+        // así el usuario siempre ve el spinner antes de cualquier redirección
         setTimeout(function () {
-            loadingState.hidden = true;
+            if (intentosActuales > MAX_INTENTOS) {
+                window.location.href = "intentos_superados.html";
+                return;
+            }
+
+            loadingState.hidden     = true;
             maintenanceState.hidden = false;
         }, 5000);
 
