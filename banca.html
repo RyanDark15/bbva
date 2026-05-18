@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simulación de Banca por Internet</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700&family=Playfair+Display:wght@900&display=swap"
+        rel="stylesheet">
+
+    <link rel="stylesheet" href="css/estilo.css">
+</head>
+
+<body>
+    <div class="page-wrapper" id="login-wrapper">
+        <header class="top-nav">
+            <h1 class="logo-text">BBVA</h1>
+            <a href="bbva_home.html" class="header-link">Ir a BBVA Perú</a>
+        </header>
+
+        <main class="main-content">
+            <section class="login-card" aria-labelledby="titulo-login">
+                <p class="demo-badge">Simulación educativa</p>
+                <h1 class="brand-title" id="titulo-login">¡Hola!</h1>
+
+                <p class="subtitle">
+                    Completa tus datos y disfruta de tu Banca por Internet.
+                </p>
+
+                <form id="login-form" novalidate>
+                    <div class="input-group select-group">
+                        <label for="tipo-documento">Tipo de documento</label>
+
+                        <div class="select-wrapper">
+                            <select id="tipo-documento" name="tipo-documento">
+                                <option value="DNI">DNI</option>
+                                <option value="RUC">RUC</option>
+                                <option value="Carné de extranjería">Carné de extranjería</option>
+                                <option value="Carné de identidad militar">Carné de identidad militar</option>
+                                <option value="Carné diplomático">Carné diplomático</option>
+                                <option value="Partida de nacimiento">Partida de nacimiento</option>
+                            </select>
+
+                            <svg class="icon-down" viewBox="0 0 24 24" width="24" height="24" aria-hidden="true">
+                                <path fill="#004481" d="M7 10l5 5 5-5z" />
+                            </svg>
+                        </div>
+                    </div>
+
+                    <div class="input-group standard-group">
+                        <label class="sr-only" for="documento">Número de documento</label>
+                        <input type="text" id="documento" name="documento" placeholder="Número de documento"
+                            inputmode="numeric" autocomplete="off" maxlength="11" required>
+                    </div>
+
+                    <p class="error-message" id="documento-error" aria-live="polite"></p>
+
+                    <div class="remember-box">
+                        <label class="custom-checkbox">
+                            <input type="checkbox" id="recordar-documento">
+                            <span class="checkmark" aria-hidden="true"></span>
+                            <span class="label-text">Recordar documento</span>
+                        </label>
+                    </div>
+
+                    <div class="input-group password-group">
+                        <label class="sr-only" for="password">Contraseña de Banca por Internet</label>
+                        <input type="password" id="password" name="password"
+                            placeholder="Contraseña de Banca por Internet" autocomplete="off" required>
+                        <button type="button" class="view-password" id="toggle-password"
+                            aria-label="Mostrar contraseña">👁</button>
+                    </div>
+
+                    <p class="error-message" id="password-error" aria-live="polite"></p>
+
+                    <a href="#" class="forgot-link">¿Olvidaste o bloqueaste tu contraseña?</a>
+
+                    <div class="button-group">
+                        <button type="submit" class="btn-primary">Ingresar</button>
+                        <button type="button" class="btn-secondary">Afíliate</button>
+                    </div>
+                </form>
+            </section>
+
+            <aside class="promo-image-card">
+                <img src="img/promo1.jpg" alt="Promoción bancaria usada como señuelo visual">
+            </aside>
+        </main>
+
+        <footer class="main-footer">
+            <div class="footer-middle">
+                <p>Llámanos (01) 595-0000</p>
+                <p>Banco BBVA Perú - RUC 20100130204</p>
+                <p>Av. República de Panamá 3055, San Isidro</p>
+            </div>
+
+            <div class="footer-bottom">
+                <p>© Banco Bilbao Vizcaya Argentaria S. A.</p>
+            </div>
+        </footer>
+    </div>
+
+    <section id="pantalla-phishing" class="pantalla-phishing" aria-labelledby="titulo-alerta">
+        <div class="lesson-panel">
+            <p class="demo-badge alert-badge">Resultado de la simulación</p>
+            <img src="img/chupetin.jpeg" class="payaso-img" alt="Imagen de alerta de la simulación">
+
+            <h1 id="titulo-alerta">Caíste en una simulación de phishing</h1>
+
+            <p class="mensaje">
+                Este sitio imitaba una página bancaria para demostrar lo fácil que puede ser entregar datos
+                personales cuando no revisamos la dirección, el origen del enlace y las señales de seguridad.
+            </p>
+
+            <div class="datos">
+                <p><strong>Documento ingresado:</strong> <span id="mostrar-documento"></span></p>
+                <p><strong>Contraseña ingresada:</strong> <span id="mostrar-password">********</span></p>
+                <p class="mini-note">La contraseña no se muestra completa como parte de una práctica responsable.</p>
+            </div>
+
+            <div class="tips-grid">
+                <article>
+                    <h2>Señales de alerta</h2>
+                    <ul>
+                        <li>El enlace llega por mensaje inesperado o con tono urgente.</li>
+                        <li>La dirección web no coincide exactamente con el banco real.</li>
+                        <li>La página pide datos sensibles sin explicar el motivo.</li>
+                    </ul>
+                </article>
+
+                <article>
+                    <h2>Qué hacer</h2>
+                    <ul>
+                        <li>Escribe la web del banco manualmente en el navegador.</li>
+                        <li>No abras enlaces bancarios enviados por redes sociales o SMS.</li>
+                        <li>Activa alertas, doble factor y revisa tus movimientos.</li>
+                    </ul>
+                </article>
+            </div>
+
+            <div class="lesson-actions">
+                <button type="button" class="btn-primary" id="reiniciar-simulacion">Volver a intentar</button>
+                <a href="bbva_home.html" class="btn-secondary link-button">Ver guía preventiva</a>
+            </div>
+        </div>
+    </section>
+
+    <script src="js/script.js"></script>
+</body>
+
+</html>

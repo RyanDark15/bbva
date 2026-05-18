@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Intentos superados</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700&family=Playfair+Display:wght@900&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="css/estilo.css">
+</head>
+
+<body class="maintenance-body">
+    <main class="maintenance-shell">
+        <section class="maintenance-card">
+            <h1 class="logo-text">BBVA</h1>
+            <h2>No se pudo completar la solicitud</h2>
+            <p>Se superó el número de intentos permitidos. Por favor, vuelve a intentarlo más tarde.</p>
+            <a href="banca.html" class="btn-primary link-button" id="reset-flow">Volver al inicio</a>
+        </section>
+    </main>
+
+    <script>
+        document.getElementById("reset-flow").addEventListener("click", function () {
+            sessionStorage.removeItem("intentosMantenimiento");
+        });
+    </script>
+</body>
+
+</html>
