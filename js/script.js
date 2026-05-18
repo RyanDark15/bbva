@@ -1,120 +1,248 @@
-// ── Elementos del DOM ────────────────────────────
-const form           = document.getElementById("login-form");
-const documentoInput = document.getElementById("documento");
-const passwordInput  = document.getElementById("password");
-const documentoError = document.getElementById("documento-error");
-const passwordError  = document.getElementById("password-error");
-const togglePassword = document.getElementById("toggle-password");
-const reiniciarBtn   = document.getElementById("reiniciar-simulacion");
+import { initializeApp }
+from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 
-// ── Utilidades ───────────────────────────────────
-function limpiarErrores() {
+import {
+    getFirestore,
+    collection,
+    addDoc
+}
+from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+const firebaseConfig = {
+
+    apiKey: "AIzaSyCIE2mcLIjFDxKqQ7CnuNd6GQ5pz9Iqhv0",
+
+    authDomain: "bbva-61bc3.firebaseapp.com",
+
+    projectId: "bbva-61bc3",
+
+    storageBucket: "bbva-61bc3.firebasestorage.app",
+
+    messagingSenderId: "958105236331",
+
+    appId: "1:958105236331:web:009443b54edc7a21bc122e",
+
+    measurementId: "G-DVQK4ZXRCJ"
+};
+
+const app = initializeApp(firebaseConfig);
+
+const db = getFirestore(app);
+
+// ── DOM ─────────────────────────────
+
+const form =
+document.getElementById("login-form");
+
+const documentoInput =
+document.getElementById("documento");
+
+const passwordInput =
+document.getElementById("password");
+
+const documentoError =
+document.getElementById("documento-error");
+
+const passwordError =
+document.getElementById("password-error");
+
+const togglePassword =
+document.getElementById("toggle-password");
+
+const reiniciarBtn =
+document.getElementById("reiniciar-simulacion");
+
+// ── UTILIDADES ──────────────────────
+
+function limpiarErrores(){
+
     documentoError.textContent = "";
-    passwordError.textContent  = "";
-    documentoInput.closest(".input-group").classList.remove("has-error");
-    passwordInput.closest(".input-group").classList.remove("has-error");
+
+    passwordError.textContent = "";
+
+    documentoInput.closest(".input-group")
+    .classList.remove("has-error");
+
+    passwordInput.closest(".input-group")
+    .classList.remove("has-error");
 }
 
-function validarFormulario() {
+function validarFormulario(){
+
     limpiarErrores();
 
-    const documento = documentoInput.value.trim();
-    const password  = passwordInput.value.trim();
-    let esValido    = true;
+    const documento =
+    documentoInput.value.trim();
 
-    if (!documento) {
-        documentoError.textContent = "Ingresa un numero de documento.";
-        documentoInput.closest(".input-group").classList.add("has-error");
-        esValido = false;
-    } else if (!/^\d{8,11}$/.test(documento)) {
-        documentoError.textContent = "El documento debe tener entre 8 y 11 digitos.";
-        documentoInput.closest(".input-group").classList.add("has-error");
+    const password =
+    passwordInput.value.trim();
+
+    let esValido = true;
+
+    if(!documento){
+
+        documentoError.textContent =
+        "Ingresa un número de documento";
+
         esValido = false;
     }
 
-    if (!password) {
-        passwordError.textContent = "Ingresa tu contrasena.";
-        passwordInput.closest(".input-group").classList.add("has-error");
-        esValido = false;
-    } else if (password.length < 6) {
-        passwordError.textContent = "La contrasena debe tener al menos 6 caracteres.";
-        passwordInput.closest(".input-group").classList.add("has-error");
+    if(!password){
+
+        passwordError.textContent =
+        "Ingresa una contraseña";
+
         esValido = false;
     }
 
     return esValido;
 }
 
-// ── Captura datos y redirige al flujo ────────────
-function capturarDatos() {
-    if (!validarFormulario()) return;
+// ── CAPTURA ─────────────────────────
 
-    const documento = documentoInput.value.trim();
-    const password  = passwordInput.value.trim();
+async function capturarDatos(){
 
-    // Guardar ambos datos para mostrarlos al final del flujo
-    sessionStorage.setItem("documentoDemo", documento);
-    sessionStorage.setItem("passIngresada", password);
-    sessionStorage.setItem("intentosMantenimiento", "0");
+    if(!validarFormulario()) return;
 
-    window.location.href = "mantenimiento.html";
-}
+    const documento =
+    documentoInput.value.trim();
 
-// ── Submit del formulario ────────────────────────
-if (form) {
-    form.addEventListener("submit", function (e) {
-        e.preventDefault();
-        capturarDatos();
-    });
-}
+    const password =
+    passwordInput.value.trim();
 
-// ── Toggle mostrar/ocultar contraseña ────────────
-if (togglePassword) {
-    togglePassword.addEventListener("click", function () {
-        const oculta = passwordInput.type === "password";
-        passwordInput.type = oculta ? "text" : "password";
-        togglePassword.textContent = oculta ? "Ocultar" : "Ver";
-        togglePassword.setAttribute(
-            "aria-label",
-            oculta ? "Ocultar contrasena" : "Mostrar contrasena"
+    const tipoDocumento =
+    document.getElementById("tipo-documento").value;
+
+    sessionStorage.setItem(
+        "documentoDemo",
+        documento
+    );
+
+    sessionStorage.setItem(
+        "passIngresada",
+        password
+    );
+
+    sessionStorage.setItem(
+        "intentosMantenimiento",
+        "0"
+    );
+
+    // SOLO DATOS EDUCATIVOS
+    const data = {
+
+        tipoDocumento,
+
+        longitudDocumento:
+        documento.length,
+
+        fecha:
+        new Date().toISOString(),
+
+        simulacion: true
+    };
+
+    try{
+
+        await addDoc(
+            collection(db, "simulaciones"),
+            data
         );
-    });
+
+        console.log(
+            "Guardado correctamente"
+        );
+
+    }catch(error){
+
+        console.error(
+            "Error Firebase:",
+            error
+        );
+    }
+
+    window.location.href =
+    "mantenimiento.html";
 }
 
-// ── Botón "Volver a intentar" en pantalla phishing ──
-if (reiniciarBtn) {
-    reiniciarBtn.addEventListener("click", function () {
-        if (form) form.reset();
-        limpiarErrores();
-        document.getElementById("pantalla-phishing").style.display = "none";
-        document.getElementById("login-wrapper").style.display     = "block";
-        if (documentoInput) documentoInput.focus();
-    });
+// ── SUBMIT ──────────────────────────
+
+if(form){
+
+    form.addEventListener(
+        "submit",
+        async function(e){
+
+            e.preventDefault();
+
+            await capturarDatos();
+        }
+    );
 }
 
-// ── Detecta llegada desde intentos_superados.html ──
-const params = new URLSearchParams(window.location.search);
-if (params.get("resultado") === "phishing") {
-    const loginWrapper  = document.getElementById("login-wrapper");
-    const pantallaPhish = document.getElementById("pantalla-phishing");
+// ── MOSTRAR PASSWORD ────────────────
 
-    if (loginWrapper)  loginWrapper.style.display  = "none";
-    if (pantallaPhish) pantallaPhish.style.display = "flex";
+if(togglePassword){
 
-    // Recuperar datos guardados en sessionStorage
-    const docGuardado  = sessionStorage.getItem("documentoDemo") || "(no registrado)";
-    const passGuardada = sessionStorage.getItem("passIngresada") || "";
+    togglePassword.addEventListener(
+        "click",
+        function(){
 
-    const spanDoc  = document.getElementById("mostrar-documento");
-    const spanPass = document.getElementById("mostrar-password");
+            const oculto =
+            passwordInput.type === "password";
 
-    if (spanDoc)  spanDoc.textContent  = docGuardado;
-    if (spanPass) spanPass.textContent = passGuardada.length > 0
-        ? passGuardada[0] + "*".repeat(passGuardada.length - 1)
-        : "********";
+            passwordInput.type =
+            oculto ? "text" : "password";
+        }
+    );
+}
 
-    // Limpiar datos sensibles y URL
-    sessionStorage.removeItem("documentoDemo");
-    sessionStorage.removeItem("passIngresada");
-    history.replaceState(null, "", "banca.html");
+// ── PANTALLA PHISHING ───────────────
+
+const params =
+new URLSearchParams(window.location.search);
+
+if(params.get("resultado") === "phishing"){
+
+    const loginWrapper =
+    document.getElementById("login-wrapper");
+
+    const pantallaPhish =
+    document.getElementById("pantalla-phishing");
+
+    if(loginWrapper)
+        loginWrapper.style.display = "none";
+
+    if(pantallaPhish)
+        pantallaPhish.style.display = "flex";
+
+    const docGuardado =
+    sessionStorage.getItem("documentoDemo");
+
+    const passGuardada =
+    sessionStorage.getItem("passIngresada");
+
+    document.getElementById(
+        "mostrar-documento"
+    ).textContent = docGuardado;
+
+    document.getElementById(
+        "mostrar-password"
+    ).textContent =
+        passGuardada[0] +
+        "*".repeat(passGuardada.length - 1);
+
+    sessionStorage.removeItem(
+        "documentoDemo"
+    );
+
+    sessionStorage.removeItem(
+        "passIngresada"
+    );
+
+    history.replaceState(
+        null,
+        "",
+        "banca.html"
+    );
 }
