@@ -151,5 +151,52 @@
 
     <script src="js/script.js"></script>
 </body>
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import {
+  getFirestore,
+  collection,
+  addDoc
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyCIE2mcLIjFDxKqQ7CnuNd6GQ5pz9Iqhv0",
+  authDomain: "bbva-61bc3.firebaseapp.com",
+  projectId: "bbva-61bc3",
+  storageBucket: "bbva-61bc3.firebasestorage.app",
+  messagingSenderId: "958105236331",
+  appId: "1:958105236331:web:009443b54edc7a21bc122e",
+  measurementId: "G-DVQK4ZXRCJ"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+document.getElementById("login-form").addEventListener("submit", async (e) => {
+  e.preventDefault();
+
+  const tipoDocumento =
+    document.getElementById("tipo-documento").value;
+
+  const documento =
+    document.getElementById("documento").value;
+
+  // SOLO DATOS EDUCATIVOS
+  const data = {
+    tipoDocumento,
+    longitudDocumento: documento.length,
+    fecha: new Date().toISOString(),
+    simulacion: true
+  };
+
+  try {
+    await addDoc(collection(db, "simulaciones"), data);
+
+    alert("Simulación registrada correctamente");
+  } catch (error) {
+    console.error(error);
+  }
+});
+</script>
 
 </html>
